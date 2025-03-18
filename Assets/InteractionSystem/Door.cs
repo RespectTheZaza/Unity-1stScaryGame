@@ -2,25 +2,35 @@ using UnityEngine;
 
 public class Door : MonoBehaviour, IInteractable
 {
-    [SerializeField] private string _prompt;
+    [SerializeField] private string _prompt = "Open Door"; // Interaction text
+    [SerializeField] private string requiredKey = "GoldenKey"; // Set in Inspector
+    [SerializeField] private Transform doorTransform; // Assign the door object in Inspector
+    private bool isOpen = false;
+    private float openAngle = 90f; // Adjust as needed
 
     public string InteractionPrompt => _prompt;
-    
+
     public bool Interact(Interactor interactor)
     {
+        var inventory = interactor.GetComponent<Inventory>();
 
-        var Inventory = interactor.GetComponent<Inventory>();
+        if (inventory == null) return false;
 
-        if (Inventory == null) return false;
-
-        if (Inventory.HasKey)
+        if (inventory.HasKey(requiredKey)) // Check if player has the right key
         {
-            Debug.Log("opening door");
+            ToggleDoor();
             return true;
         }
 
-        Debug.Log("no key found");
+        Debug.Log("No key found! You need: " + requiredKey);
         return false;
     }
 
+    private void ToggleDoor()
+    {
+        isOpen = !isOpen;
+        float targetRotation = isOpen ? openAngle : 0f;
+        doorTransform.localRotation = Quaternion.Euler(0, targetRotation, 0);
+        Debug.Log(isOpen ? "Door opened!" : "Door closed!");
+    }
 }
