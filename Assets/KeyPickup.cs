@@ -1,22 +1,46 @@
 using UnityEngine;
+using FishNet.Object;
 
-public class KeyPickup : MonoBehaviour, IInteractable
+public class KeyPickup : NetworkBehaviour, IInteractable
 {
-    [SerializeField] private string keyName = "GoldenKey"; // Set in Inspector
+    [SerializeField] private string keyName = "GoldenKey";
 
     public string InteractionPrompt => "Pick up " + keyName;
 
     public bool Interact(Interactor interactor)
     {
-        var inventory = interactor.GetComponent<Inventory>();
+        if (!IsServer) // Ensure only the server handles item pickup
+        {
+            RequestPickupServerRpc(interactor.GetComponent<NetworkObject>());
+            return false;
+        }
 
+        PickupKey(interactor.GetComponent<NetworkObject>());
+        return true;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestPickupServerRpc(NetworkObject playerObject)
+    {
+        if (playerObject != null)
+        {
+            PickupKey(playerObject);
+        }
+    }
+
+    private void PickupKey(NetworkObject playerObject)
+    {
+        Inventory inventory = playerObject.GetComponent<Inventory>();
         if (inventory != null)
         {
             inventory.AddKey(keyName);
-            Destroy(gameObject); // Remove key from scene
-            return true;
+            RemoveKeyFromSceneObserversRpc();
         }
+    }
 
-        return false;
+    [ObserversRpc]
+    private void RemoveKeyFromSceneObserversRpc()
+    {
+        gameObject.SetActive(false); // Hide key for all players
     }
 }
