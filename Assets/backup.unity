@@ -119,6 +119,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!4 &32565489 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5963624997266191725, guid: e154a05c6a883354b81a1159643b0a57, type: 3}
+  m_PrefabInstance: {fileID: 3800621185156336394}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &43053163
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,6 +456,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: -8, y: -5, z: -8, w: -5}
   m_Softness: {x: 0, y: 0}
+--- !u!224 &213435621 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4337796385533477778, guid: e154a05c6a883354b81a1159643b0a57, type: 3}
+  m_PrefabInstance: {fileID: 3800621185156336394}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &218244487
 GameObject:
   m_ObjectHideFlags: 0
@@ -2970,6 +2980,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6417626739571384981, guid: e154a05c6a883354b81a1159643b0a57, type: 3}
+      propertyPath: m_Name
+      value: NameTag
+      objectReference: {fileID: 0}
     - target: {fileID: 6923984849536675227, guid: e154a05c6a883354b81a1159643b0a57, type: 3}
       propertyPath: m_Name
       value: 'Player '
@@ -2978,10 +2992,14 @@ PrefabInstance:
       propertyPath: <SceneId>k__BackingField
       value: 4091731904
       objectReference: {fileID: 0}
-    - target: {fileID: 7458880227119162792, guid: e154a05c6a883354b81a1159643b0a57, type: 3}
-      propertyPath: 'InitializedNestedNetworkObjects.Array.data[0]'
+    - target: {fileID: 9083139333497233894, guid: e154a05c6a883354b81a1159643b0a57, type: 3}
+      propertyPath: playerTransform
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 32565489}
+    - target: {fileID: 9083139333497233894, guid: e154a05c6a883354b81a1159643b0a57, type: 3}
+      propertyPath: nameTagTransform
+      value: 
+      objectReference: {fileID: 213435621}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

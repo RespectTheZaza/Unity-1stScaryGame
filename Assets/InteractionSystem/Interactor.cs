@@ -1,10 +1,9 @@
 using UnityEngine;
-using System.Collections;
 using UnityEngine.InputSystem;
-using System;
-using System.Collections.Generic;
+using System.Collections;
+using FishNet.Object;
 
-public class Interactor : MonoBehaviour
+public class Interactor : NetworkBehaviour
 {
     [SerializeField] private Transform _interactionPoint;
     [SerializeField] private float _interactionPointRadius = 0.5f;
@@ -15,19 +14,34 @@ public class Interactor : MonoBehaviour
 
     private void Update()
     {
-        _numFound = Physics.OverlapSphereNonAlloc(_interactionPoint.position, _interactionPointRadius, _colliders,
-            _interactionMask);
+        _numFound = Physics.OverlapSphereNonAlloc(
+            _interactionPoint.position, _interactionPointRadius, 
+            _colliders, _interactionMask);
 
-            if (_numFound > 0)
+        bool isLookingAtInteractable = false;
+
+        if (_numFound > 0)
+        {
+            var interactable = _colliders[0].GetComponent<IInteractable>();
+
+            if (interactable != null)
             {
-                var interactable = _colliders[0].GetComponent<IInteractable>();
+                isLookingAtInteractable = true;
 
-                if(interactable != null && Keyboard.current.eKey.wasPressedThisFrame)
+                if (Keyboard.current.eKey.wasPressedThisFrame)
                 {
+                    Debug.Log("Pressed 'E' - Attempting to interact with " + _colliders[0].gameObject.name);
                     interactable.Interact(this);
                 }
             }
-    }    
+        }
+
+        // Update Crosshair UI
+        if (CrosshairUI.Instance != null)
+        {
+            CrosshairUI.Instance.SetCrosshairColor(isLookingAtInteractable);
+        }
+    }
 
     private void OnDrawGizmos()
     {
