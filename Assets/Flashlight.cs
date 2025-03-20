@@ -4,29 +4,52 @@ using UnityEngine.InputSystem;
 
 public class Flashlight : NetworkBehaviour
 {
-    [SerializeField] private Light flashlight; // Assign in Inspector
-    [SerializeField] private Transform cameraTransform; // Assign Player Camera in Inspector
-    [SerializeField] private Transform flashlightPivot; // Empty GameObject used to rotate flashlight
+    [SerializeField] private Light flashlight; 
+    [SerializeField] private Transform cameraTransform; 
+    [SerializeField] private Transform flashlightPivot; 
+    [SerializeField] private GameObject lightObject; 
 
     public float flashlightSmoothSpeed = 10f;
     public float maxVerticalAngle = 60f;
     public float minVerticalAngle = -60f;
 
-    private bool isOn = false; // Local flashlight state
+    private bool isOn = false; 
 
-    public override void OnStartClient()
+    void Awake()
     {
-        base.OnStartClient();
-        if (!IsOwner) return;
-
-        flashlight.enabled = false; // Ensure flashlight starts OFF
+        
+        if (flashlightPivot != null)
+        {
+            flashlightPivot.gameObject.SetActive(true);
+        }
     }
+
+public override void OnStartClient()
+{
+    base.OnStartClient();
+
+    if (flashlightPivot == null)
+    {
+        Debug.LogError("FlashlightPivot is not assigned! Assign it in the Inspector.");
+        return;
+    }
+
+    
+    flashlightPivot.gameObject.SetActive(true);
+    Debug.Log("FlashlightPivot forced active on client start.");
+
+    if (!IsOwner) return; 
+
+    
+    SetFlashlightState(false);
+}
+
 
     void Update()
     {
         if (!IsOwner) return;
 
-        // Toggle Flashlight ON/OFF with "F"
+        
         if (Keyboard.current.fKey.wasPressedThisFrame)
         {
             isOn = !isOn;
@@ -38,6 +61,8 @@ public class Flashlight : NetworkBehaviour
 
     private void AlignFlashlightWithView()
     {
+        if (flashlightPivot == null || cameraTransform == null) return;
+
         flashlightPivot.rotation = cameraTransform.rotation;
 
         Vector3 currentRotation = flashlightPivot.localEulerAngles;
@@ -46,7 +71,7 @@ public class Flashlight : NetworkBehaviour
 
         flashlightPivot.localRotation = Quaternion.Euler(currentRotation);
 
-        // ✅ Sync flashlight rotation
+        
         UpdateFlashlightRotationServerRpc(flashlightPivot.rotation);
     }
 
@@ -60,7 +85,19 @@ public class Flashlight : NetworkBehaviour
     [ObserversRpc(BufferLast = true)]
     private void ToggleFlashlightObserversRpc(bool state)
     {
+        SetFlashlightState(state);
+    }
+
+    private void SetFlashlightState(bool state)
+    {
+        if (flashlight == null)
+        {
+            Debug.LogError("Flashlight is not assigned!");
+            return;
+        }
+
         flashlight.enabled = state;
+        if (lightObject != null) lightObject.SetActive(state); 
     }
 
     [ServerRpc(RequireOwnership = false)]

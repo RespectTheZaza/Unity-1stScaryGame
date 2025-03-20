@@ -5,7 +5,7 @@ public class FPSCamera : NetworkBehaviour
 {
     public float mouseSensitivity = 150f;
     public Transform playerBody;
-    public Camera playerCamera; // Reference this directly in the Inspector
+    public Camera playerCamera; 
 
     private float xRotation = 0f;
 
@@ -15,7 +15,7 @@ public class FPSCamera : NetworkBehaviour
         if (base.IsOwner)
         {
             gameObject.SetActive(true);
-            LockCursor(); // Lock cursor when the player spawns
+            LockCursor(); 
         }
     }
 
@@ -23,7 +23,7 @@ public class FPSCamera : NetworkBehaviour
     {
         if (!base.IsOwner) return;
 
-        HandleMouseLock(); // Check if player presses Escape
+        HandleMouseLock(); 
 
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
@@ -37,14 +37,14 @@ public class FPSCamera : NetworkBehaviour
 
     private void LockCursor()
     {
-        Cursor.lockState = CursorLockMode.Locked; // Locks cursor to the center of the screen
-        Cursor.visible = false; // Hides the cursor
+        Cursor.lockState = CursorLockMode.Locked; 
+        Cursor.visible = false; 
     }
 
     private void UnlockCursor()
     {
-        Cursor.lockState = CursorLockMode.None; // Unlocks cursor
-        Cursor.visible = true; // Makes cursor visible again
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true; 
     }
 
     private void HandleMouseLock()
@@ -53,11 +53,11 @@ public class FPSCamera : NetworkBehaviour
         {
             if (Cursor.lockState == CursorLockMode.Locked)
             {
-                UnlockCursor(); // Unlock the cursor when Escape is pressed
+                UnlockCursor(); 
             }
             else
             {
-                LockCursor(); // Relock the cursor when Escape is pressed again
+                LockCursor(); 
             }
         }
     }
